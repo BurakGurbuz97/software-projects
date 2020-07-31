@@ -1,0 +1,15 @@
+[package]
+name = "orhunhukuk"
+version = "0.1.0"
+authors = ["musta <mustafaburakgurbuz@gmail.com>"]
+
+[dependencies]
+actix = "0.5"
+actix-web = "0.5"
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+rust-crypto = "0.2"
+futures = "0.1"
+postgres = "0.15"
+uuid = { version = "0.6", features = ["v4"] }

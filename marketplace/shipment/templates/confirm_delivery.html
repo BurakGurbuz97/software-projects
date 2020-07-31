@@ -1,0 +1,109 @@
+
+{% extends "base.html" %}
+{% load i18n webtags %}
+{% block title %}Confirm address{% endblock %}
+{% block loginRegModals %}{% endblock %}
+{% block content %}
+<style>
+    h3 {
+color:#e60000;
+}
+label{
+color:rgb(74,77,78);
+}
+</style>
+
+<div class="container" style="text-align:center;margin-top:50px;">
+    <form method="POST" action="{% url "save_shipment" %}" class="save-shipment">{% csrf_token %}
+    <div class="block-heading">
+        <h2 style="color:#e60000">Confirm Address</h2>
+    </div>
+        <div class="row">
+    <div class="col-md-6">
+        <label ><h3 >Shipment Address</h3></label><br/>
+        <label class="font-weight-bold"> Address Name:</label> {{form.address_name.value}}<br/>
+        <label class="font-weight-bold"> Name:</label> {{form.name.value}}<br/>
+        <label class="font-weight-bold"> Surname:</label> {{form.surname.value}}<br/>
+        <label class="font-weight-bold"> Email:</label> {{form.email.value}}<br/>
+        <label class="font-weight-bold"> Phone Number:</label> {{form.phone.value}}<br/>
+        <label class="font-weight-bold"> City:</label> {{ form|selected_choice:"city" }}<br/>
+        <label class="font-weight-bold"> Neighborhood:</label> {{form.neighborhood.value}}<br/>
+        <label class="font-weight-bold"> District:</label> {{form.district.value}}<br/>
+        <label class="font-weight-bold"> Others:</label> {{form.others.value}}<br/>
+        <label class="font-weight-bold"> Additional Notes:</label> {{form.extra.value}}<br/>
+    </div>
+            <div class="col-md-6">
+        <label ><h3 >Billing Address</h3></label><br/>
+                <label class="font-weight-bold"> Address Name:</label> {{bill_form.address_name.value}}<br/>
+        <label class="font-weight-bold"> Name:</label> {{bill_form.name.value}}<br/>
+        <label class="font-weight-bold"> Surname:</label> {{bill_form.surname.value}}<br/>
+        <label class="font-weight-bold"> Email:</label> {{bill_form.email.value}}<br/>
+        <label class="font-weight-bold"> Phone Number:</label> {{bill_form.phone.value}}<br/>
+        <label class="font-weight-bold"> City:</label> {{ bill_form|selected_choice:"city" }}<br/>
+        <label class="font-weight-bold"> Neighborhood:</label> {{bill_form.neighborhood.value}}<br/>
+        <label class="font-weight-bold"> District:</label> {{bill_form.district.value}}<br/>
+        <label class="font-weight-bold"> Others:</label> {{bill_form.others.value}}<br/>
+        <label class="font-weight-bold"> Additional Notes:</label> {{bill_form.extra.value}}<br/>
+            </div>
+
+
+
+        <div style="margin-left:40%;text-align: center;">
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="border: 0px;background-color:green;display: inline-block;width:auto;margin-top:25px;" >Confirm</button>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="border: 0px;background-color:#e60000;display: inline-block;width:auto;margin-top:25px;" formaction="{% url "add_shipment" %}">Back</button>
+        </div><br/>
+        {{bill_form.address_name}}
+        {{bill_form.name}}
+        {{bill_form.surname}}
+        {{bill_form.email}}
+        {{bill_form.phone}}
+        {{bill_form.city}}
+        {{bill_form.neighborhood}}
+        {{bill_form.district}}
+        {{bill_form.others}}
+        {{bill_form.extra}}
+
+        {{form.address_name}}
+        {{form.name}}
+        {{form.surname }}
+        {{form.email}}
+        {{form.phone}}
+        {{form.city}}
+        {{form.neighborhood}}
+        {{form.district}}
+        {{form.others}}
+        {{form.extra}}
+
+
+    </form>
+                    </div>
+<label id="ib7o" class="label"></label>
+
+  <div class="cell" id="i8jb5n">
+  </div>
+</div>
+<script type="text/javascript">
+    document.getElementsByName("address_name")[0].style.visibility = "hidden";
+    document.getElementsByName("name")[0].style.visibility = "hidden";
+    document.getElementsByName("surname")[0].style.visibility = "hidden";
+    document.getElementsByName("email")[0].style.visibility = "hidden";
+    document.getElementsByName("phone")[0].style.visibility = "hidden";
+    document.getElementsByName("city")[0].style.visibility = "hidden";
+    document.getElementsByName("district")[0].style.visibility = "hidden";
+    document.getElementsByName("neighborhood")[0].style.visibility = "hidden";
+    document.getElementsByName("others")[0].style.visibility = "hidden";
+    document.getElementsByName("extra")[0].style.visibility = "hidden";
+    document.getElementsByName("address_name")[1].style.visibility = "hidden";
+    document.getElementsByName("name")[1].style.visibility = "hidden";
+    document.getElementsByName("surname")[1].style.visibility = "hidden";
+    document.getElementsByName("email")[1].style.visibility = "hidden";
+    document.getElementsByName("phone")[1].style.visibility = "hidden";
+    document.getElementsByName("city")[1].style.visibility = "hidden";
+    document.getElementsByName("district")[1].style.visibility = "hidden";
+    document.getElementsByName("neighborhood")[1].style.visibility = "hidden";
+    document.getElementsByName("others")[1].style.visibility = "hidden";
+    document.getElementsByName("extra")[1].style.visibility = "hidden";
+</script>
+
+
+{% endblock %}

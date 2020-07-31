@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load i18n static humanize thumbnail %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+    <div class="container" style="padding-top:5%">
+        <div class="row justify-content-center">
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <div id="productImages" class="carousel slide" data-ride="carousel" data-interval="false">
+                    <ol class="carousel-indicators">
+                        {% for image in product.images.all %}
+                            <li data-target="#productImages" data-slide-to="{{ forloop.counter0 }}"
+                                    {% if forloop.first %} class="active"{% endif %}></li>
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner">
+                        {% for image in product.images.all %}
+                            <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                                {% thumbnail image.image "350x350" crop="center" as im %}
+                                    <a href="{{ image.image.url }}" data-lightbox="roadtrip"
+                                       data-title="{{ image.title }}">
+                                        <img src="{{ im.url }}" class="d-block w-100 carousel-image"
+                                             alt="{{ image.title }}">
+                                    </a>
+                                {% endthumbnail %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev" href="#productImages" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">{% trans "Previous" %}</span>
+                    </a>
+                    <a class="carousel-control-next" href="#productImages" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">{% trans "Next" %}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-0"></div>
+            <div class="col-lg-5 col-md-5 col-sm-10">
+                <div class="h3 my-auto">{{ product.name }}</div>
+                <div>
+                    <p class="mb-1 font-weight-bold">{{ product.price|floatformat:2 }} <i class="fas fa-lira-sign"></i>
+                    </p>
+                    <p class="mb-1">Rating: {% if product.average_rating %}{{ product.average_rating }}/100{% else %}
+                        {% trans "N/A" %}{% endif %}</p>
+                    {% for property in main_properties %}
+                        <p class="{% if forloop.last %}mb-5{% else %}mb-1{% endif %}">{{ property.option.name }}: {{ property.value }}</p>
+                    {% endfor %}
+                    <button type="button" class="btn btn-danger add-basket-item" data-product-slug="{{ product.slug }}"
+                            data-quantity="1">
+                        <i class="fas fa-shopping-basket"></i> {% trans "Add to basket" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="clean-block"></div>
+        <div>
+            <div class="h3 my-auto">{% trans "Additional details" %}</div>
+            <hr/>
+            <table class="table table-bordered">
+                <tbody>
+                {% for property in additional_properties %}
+                    <tr>
+                        <th scope="row">{{ property.option.name }}</th>
+                        <td>{% if property.value == "check" %}
+                            <i class="fa fa-check-circle green-text"></i>{% elif property.value == "no-check" %}
+                            <i class="fa fa-times-circle red-text"></i>{% else %}{{ property.value }}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="clean-block"></div>
+        {% if similar_products %}
+            <div class="h3 my-auto">{% trans "Similar products" %}</div>
+            <hr/>
+            <div class="card-group">
+                {% for similar_product in similar_products %}
+                    <div class="card">
+                        <a href="{% url "product_details" slug=similar_product.slug %}" class="similar_product_item mt-2">
+                            {% thumbnail similar_product.main_image.image "350x350" crop="center" as im %}
+                            <img src="{{ im.url }}" class="card-img-top" alt="{{ similar_product.main_image.title }}">
+                            {% endthumbnail %}
+                        </a>
+                        <div class="card-body similar-product-body">
+                            <h5 class="card-title">{{ similar_product.name }}</h5>
+                            <p class="card-text">
+                            <span class="mb-1 font-weight-bold">{{ product.price|floatformat:2 }} <i class="fas fa-lira-sign"></i></span>
+                            <ul>
+                                {% for property in similar_product.properties.all %}
+                                    {% if property.is_main_property %}
+                                        <li>
+                                            {{ property.option.name }}:
+                                            {% if property.value == "check" %}
+                                                <i class="fa fa-check-circle green-text"></i>
+                                            {% elif property.value == "no-check" %}
+                                                <i class="fa fa-times-circle red-text"></i>
+                                            {% else %}
+                                                {{ property.value }}
+                                            {% endif %}
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted"></small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="clean-block"></div>
+        {% endif %}
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active text-dark" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                   role="tab" aria-controls="nav-home" aria-selected="true">{% trans "Comments" %}</a>
+                {% if not user.is_registered %}
+                    <a class="nav-link" href="#" data-toggle="modal"
+                       data-target="#signinModal">{% trans "Add Comment" %}</a>
+                {% else %}
+                    <a class="nav-item nav-link text-dark" id="nav-profile-tab" data-toggle="tab" href="#nav-addComment"
+                       role="tab" aria-controls="nav-profile" aria-selected="false">{% trans "Add Comment" %}</a>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="media p-3">
+                            <div class="media-body">
+                                <div class="well well-lg bg-light rounded p-3"
+                                     style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <span class="fa fa-star{% if comment.rate >= 0 %} checked{% endif %}"></span>
+                                            <span class="fa fa-star{% if comment.rate > 20 %} checked{% endif %}"></span>
+                                            <span class="fa fa-star{% if comment.rate > 40 %} checked{% endif %}"></span>
+                                            <span class="fa fa-star{% if comment.rate > 60 %} checked{% endif %}"></span>
+                                            <span class="fa fa-star{% if comment.rate > 80 %} checked{% endif %}"></span>
+                                        </div>
+                                        <p><small>{{ comment.modified_at|naturaltime }}</small></p>
+                                    </div>
+                                    <h6 class="media-heading text-uppercase reviews">{{ comment.subject }}</h6>
+                                    <p class="media-comment">{{ comment.message }}</p>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                        </div>
+                                        <p><small>{% if comment.author.is_registered %}{{ comment.author }}{% else %}
+                                            {% trans "Anonymous" %}{% endif %}</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="media p-3">
+                        <div class="media-body">
+                            <div class="well well-lg bg-light rounded p-3"
+                                 style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)">
+                                <p>{% trans "No comments added yet." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <!-- Add Comment -->
+            <div class="tab-pane fade" id="nav-addComment" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <form action="{% url "add_comment" slug=product.slug %}" method="post">
+                    {% csrf_token %}
+                    <div class="p-3">
+                        <div class="form-group">
+                            <label for="comment_rating" class="lfloat mr-2">{% trans "Rating:" %}</label>
+                            <div class="d-flex justify-content-start" id="rating">
+                                <div><span class="fa fa-star" id="1"></span></div>
+                                <div><span class="fa fa-star" id="2"></span></div>
+                                <div><span class="fa fa-star" id="3"></span></div>
+                                <div><span class="fa fa-star" id="4"></span></div>
+                                <div><span class="fa fa-star" id="5"></span></div>
+                            </div>
+                            <input type="hidden" name="rate" value="0" required id="id_rate">
+                        </div>
+                        <div class="form-group">
+                            <label for="comment_subject">{% trans "Heading" %}</label>
+                            <input type="text" class="form-control" id="comment_subject" name="subject" maxlength="200">
+                        </div>
+                        <div class="form-group form-group-lg">
+                            <label for="comment_description">{% trans "Comment" %}</label>
+                            <textarea class="form-control" id="comment_description" rows="5" name="message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">{% trans "Add" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extraJS %}
+    <script>
+        let rating = document.getElementById("rating");
+        let score;
+        rating.addEventListener("mouseover", function (event) {
+            let score1 = event.target.id;
+            let i;
+            for (i = 1; i <= parseInt(score1); i++) {
+                document.getElementById(i).style.color = "orange";
+            }
+            for (i = parseInt(score1) + 1; i <= 5; i++) {
+                document.getElementById(i).style.color = "";
+            }
+        }, false)
+        rating.addEventListener("mouseout", function (event) {
+            for (i = 1 || 1; i <= window.score; i++) {
+                document.getElementById(i).style.color = "orange";
+            }
+            for (i = window.score + 1 || 1; i <= 5; i++) {
+                document.getElementById(i).style.color = "";
+            }
+        }, false)
+        rating.addEventListener("click", function (event) {
+            let score2 = event.target.id;
+            window.score = parseInt(score2);
+            let i;
+            for (i = 1; i <= parseInt(score2); i++) {
+                document.getElementById(i).style.color = "orange";
+            }
+            for (i = score2 + 1; i <= 5; i++) {
+                document.getElementById(i).style.color = "";
+            }
+            $("#id_rate").val(parseInt(score2) * 20);
+        }, false)
+
+    </script>
+{% endblock %}

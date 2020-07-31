@@ -1,0 +1,54 @@
+{
+  "name": "desktop_clock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Desktop Clock",
+  "author": "Cansu and Burak",
+  "build": {
+    "appId": "..."
+  },
+  "homepage": "./",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "circletype": "^2.3.0",
+    "concurrently": "^5.0.0",
+    "electron-is-dev": "^1.1.0",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-open-weather": "^0.5.2",
+    "react-scripts": "3.2.0",
+    "uuid": "^3.3.3",
+    "wait-on": "^3.3.0"
+  },
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "electron-build": "electron-builder",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "release": "yarn react-build && electron-builder --publish=always",
+    "build": "yarn react-build && yarn electron-build",
+    "electron-dev": "concurrently \"SET BROWSER=none&& npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
+  },
+  "main": "public/electron.js",
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "electron": "^7.0.1",
+    "electron-builder": "^21.2.0"
+  }
+}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static i18n humanize thumbnail %}
+{% block title %}{% trans "Listing" %}{% endblock %}
+{% block extraHead %}<link rel="stylesheet" href="{% static 'listing/index-style.css' %}">{% endblock %}
+{% block content %}
+<section class="listing-section">
+    <button class="filter-button" onclick="filterFunction()"><i class="fa fa-filter"></i></button>
+
+    <form method="GET" id="filter" action="{% url 'listing:filter' %}/ " class="Menu">
+
+        <div class="section">
+            <div class="section-header">
+                <span class="section-header-name" dir="auto">{% trans "Search By Category" %}</span>
+            </div>
+            <ul class="section-list">
+                {% for category in categories %}
+                <li>
+                    <a href="{% url 'listing:product_list' category.slug %}" method="get" class="Category-item" data-menu-id="2" data-ref-tag="nav_em_1_1_1_2">
+                        <div>{{category.name }}</div><i class="nav-sprite hmenu-arrow-next"></i>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="section">
+            <div class="section-header">
+                <span class="section-header-name" dir="auto">{% trans "Promoted Brands" %}</span>
+            </div>
+            <ul class="section-list">
+                <li><label for="section-name"><input type="checkbox" id="Vodafone" name="Vodafone">Vodafone</label></li>
+                <li><label for="section-name"><input type="checkbox" id="Samsung" name="Samsung">Samsung</label></li>
+                <li><label for="section-name"><input type="checkbox" id="Iphone" name="Iphone">Iphone</label></li>
+                <li><label for="section-name"><input type="checkbox" id="Xiaomi" name="Xiaomi">Xiaomi</label></li>
+                <li><label for="section-name"><input type="checkbox" id="Huawei" name="Huawei">Huawei</label></li>
+            </ul>
+        </div>
+        <div class="section">
+            <div class="section-header">
+                <span class="section-header-name" dir="auto">Price</span>
+            </div>
+            <ul class="section-list">
+                <li class="section-name">
+                    <div class="input-group-append price-range">
+                        <input type="text" class="price-box" id="min-price" maxlength="9" placeholder="Min ₺" name="min-price"><br>
+                        <input type="text" class="price-box" id="max-price" name="max-price" maxlength="9" placeholder="Maks ₺" style="padding-left: 9px;"><br><br>
+                    </div>
+                    <input type="hidden" id="category" name="category" value={{category}}>
+                </li>
+            </ul>
+        </div>
+        <button type="submit" class="btn-submit">{% trans "Filter Products" %}</button>
+    </form>
+
+
+
+
+    <div style="margin-left: 20%; margin-right: 5%;">
+        <table class="table">
+            {% for product in products %}
+            <tr>
+
+                <div class="card border-secondary rounded " style="margin-top: 2%; box-shadow: 5px 10px #4A4D4E;">
+                    <div class="row no-gutters">
+                        <div class="col-3 text-center">
+                            {% thumbnail product.main_image.image "350x350" crop="center" as im %}
+                            <a href="{{ product.main_image.image.url }}" data-lightbox="roadtrip" data-title="{{ image.title }}">
+                                <img src="{{ im.url }}" style="margin-top: 2%; margin-bottom: 2%; margin-left: 2%" alt="{{ image.title }}" />
+                            </a>
+                            {% endthumbnail %}
+
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-block px-5" style="margin-top: 1rem; margin-left: 3%">
+                                <h4 class="card-title vodafone-red-text">{{product.name}}</h4>
+
+                                <h4 class="card-title vodafone-grey-text">₺ {{product.price}}</h4>
+                                <h4>
+                                    <svg class="bi bi-star-fill text-warning" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg> {% if product.average_rating %}{{ product.average_rating }}/100{% else %} {% trans "N/A" %}{% endif %}
+                                </h4>
+                                <p class="card-text vodafone-grey-text">{{product.description}}</p>
+                                <a method="get" href="{% url "product_details" slug=product.slug %}" style="position:absolute; bottom: 3%; " class="btn btn-lg text-center text-white vodafone-red-back t">{% trans "Details" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</section>
+
+
+{% block extraJS %}
+<script type="text/javascript">
+    var hashParams = $(location).attr("href").split('?')[1].split('&');
+    for (var i = 0; i < hashParams.length; i++) {
+        var p = hashParams[i].split('=');
+        if (decodeURIComponent(p[1]) == "on") {
+            document.getElementById(p[0]).checked = 'checked'
+        } else {
+            document.getElementById(p[0]).value = decodeURIComponent(p[1]);
+        }
+    }
+
+    function filterFunction() {
+        if (document.getElementById("filter").style.width == "250px") {
+            document.getElementById("filter").style.transition = "0.5s";
+            document.getElementById("filter").style.width = "0px";
+        } else {
+            document.getElementById("filter").style.transition = "0.5s";
+            document.getElementById("filter").style.width = "250px";
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

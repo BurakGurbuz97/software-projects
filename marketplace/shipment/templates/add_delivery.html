@@ -1,0 +1,205 @@
+
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Shipment{% endblock %}
+{% block loginRegModals %}{% endblock %}
+{% block content %}
+
+<style>
+ input {
+  margin-top: 10px;
+  margin-bottom:10px;
+}
+select {
+  margin-top: 10px;
+  margin-bottom:10px;
+}
+h3 {
+color:#e60000;
+}
+    </style>
+<div class="container" style="text-align:center;width:50%;margin-top:25px">
+
+<form method="POST" action="{% url "confirm_shipment" %}" class="confirm-shipment">{% csrf_token %}
+  <div class="row">
+    <div class="col-md-6">
+        <label ><h3  >Shipment Address</h3></label>
+        <select>
+             <option value="0"> New Shipment Address</option>
+                {% for shipment in shipment_list %}
+                <option value="{{ shipment.address_id.value }}"> {{ shipment.address_name.value}} </option>
+                {% endfor %}
+             </select>
+        <div >{{address_form.address_name}}</div>
+        <div >{{address_form.name}}</div>
+        <div >{{address_form.surname}}</div>
+        <div >{{address_form.email}}</div>
+        <div >{{address_form.phone}}</div>
+        <div >{{address_form.city}}</div>
+        <div >{{address_form.district}}</div>
+        <div >{{address_form.neighborhood}}</div>
+        <div >{{address_form.others}}</div>
+        <div >{{address_form.extra}}</div>
+
+        <div >
+            <button class="btn btn-primary btn-block btn-lg" style="border:0;background-color:#747778;margin:auto;width:60%;margin-top:25px;" type="button"  onclick="myFunction()">Same Billing Address</button>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label ><h3  >Billing Address</h3></label>
+        <select>
+            <option value="0"> New Billing Address</option>
+            {% for bill in shipment_list %}
+                <option value="{{ bill.address_id.value }}"> {{ bill.address_name.value }} </option>
+            {% endfor %}
+        </select>
+        <div >{{bill_form.address_name}}</div>
+        <div >{{bill_form.name}}</div>
+        <div >{{bill_form.surname}}</div>
+        <div >{{bill_form.email}}</div>
+        <div >{{bill_form.phone}}</div>
+        <div >{{bill_form.city}}</div>
+        <div >{{bill_form.district}}</div>
+        <div >{{bill_form.neighborhood}}</div>
+        <div >{{bill_form.others}}</div>
+        <div >{{bill_form.extra}}</div>
+
+    </div>
+
+
+  </div>
+    <button class="btn btn-primary btn-block btn-lg" style="border:0;background-color:#e60000;margin:auto;width:40%;margin-top:25px;" type="submit">Confirm</button>
+ </form>
+
+
+</div>
+<label id="ib7o" class="label" style="width:0px;height:0px"></label>
+
+  <div class="cell" id="i8jb5n" style="width:0px;height:0px">
+  </div>
+<script type="text/javascript">
+    var inputs = document.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i ++) {
+    inputs[i].className = "form-control" ;
+
+    }
+    var selects = document.getElementsByTagName('select');
+    for (var i = 0; i < selects.length; i ++) {
+    selects[i].className = "form-control" ;
+    }
+    selects[0].onchange = function(){
+    if(selects[0].value != "0"){
+
+
+    {% for shipment in shipment_list %}
+    if({{shipment.address_id.value}} ==  selects[0].value){
+    document.getElementsByName("address_name")[0].value = "{{shipment.address_name.value}}";
+    document.getElementsByName("name")[0].value = "{{shipment.name.value}}";
+    document.getElementsByName("surname")[0].value = "{{shipment.surname.value}}";
+    document.getElementsByName("email")[0].value = "{{shipment.email.value}}";
+    document.getElementsByName("phone")[0].value = "{{shipment.phone.value}}";
+    document.getElementsByName("city")[0].value = "{{shipment.city.value}}";
+    document.getElementsByName("district")[0].value = "{{shipment.district.value}}";
+    document.getElementsByName("neighborhood")[0].value = "{{shipment.neighborhood.value}}";
+    document.getElementsByName("others")[0].value = "{{shipment.others.value}}";
+    document.getElementsByName("extra")[0].value = "{{shipment.extra.value}}";
+    }
+    {% endfor %}
+    }else{
+
+    document.getElementsByName("address_name")[0].value = "";
+    document.getElementsByName("name")[0].value = "";
+    document.getElementsByName("surname")[0].value = "";
+    document.getElementsByName("email")[0].value = "";
+    document.getElementsByName("phone")[0].value = "";
+    document.getElementsByName("city")[0].value = 0;
+    document.getElementsByName("district")[0].value = "";
+    document.getElementsByName("neighborhood")[0].value = "";
+    document.getElementsByName("others")[0].value = "";
+    document.getElementsByName("extra")[0].value = "";
+
+
+    }
+    }
+
+
+    selects[2].onchange = function(){
+    if(selects[2].value != "0"){
+
+
+    {% for shipment in shipment_list %}
+    if({{shipment.address_id.value}} ==  selects[2].value){
+    document.getElementsByName("address_name")[1].value = "{{shipment.address_name.value}}";
+    document.getElementsByName("name")[1].value = "{{shipment.name.value}}";
+    document.getElementsByName("surname")[1].value = "{{shipment.surname.value}}";
+    document.getElementsByName("email")[1].value = "{{shipment.email.value}}";
+    document.getElementsByName("phone")[1].value = "{{shipment.phone.value}}";
+    document.getElementsByName("city")[1].value = "{{shipment.city.value}}";
+    document.getElementsByName("district")[1].value = "{{shipment.district.value}}";
+    document.getElementsByName("neighborhood")[1].value = "{{shipment.neighborhood.value}}";
+    document.getElementsByName("others")[1].value = "{{shipment.others.value}}";
+    document.getElementsByName("extra")[1].value = "{{shipment.extra.value}}";
+    }
+    {% endfor %}
+    }else{
+
+    document.getElementsByName("address_name")[1].value = "";
+    document.getElementsByName("name")[1].value = "";
+    document.getElementsByName("surname")[1].value = "";
+    document.getElementsByName("email")[1].value = "";
+    document.getElementsByName("phone")[1].value = "";
+    document.getElementsByName("city")[1].value = 0;
+    document.getElementsByName("district")[1].value = "";
+    document.getElementsByName("neighborhood")[1].value = "";
+    document.getElementsByName("others")[1].value = "";
+    document.getElementsByName("extra")[1].value = "";
+
+
+    }
+    }
+
+    document.getElementsByName("address_name")[0].placeholder = "Address Name";
+    document.getElementsByName("name")[0].placeholder = "Name";
+    document.getElementsByName("surname")[0].placeholder = "Surname";
+    document.getElementsByName("email")[0].placeholder = "Email";
+    document.getElementsByName("phone")[0].placeholder = "Phone";
+    document.getElementsByName("city")[0].placeholder = "City";
+    document.getElementsByName("district")[0].placeholder = "District";
+    document.getElementsByName("neighborhood")[0].placeholder = "Neighborhood";
+    document.getElementsByName("others")[0].placeholder = "Other";
+    document.getElementsByName("extra")[0].placeholder = "Extra Notes";
+
+    document.getElementsByName("address_name")[1].placeholder = "Address Name";
+    document.getElementsByName("name")[1].placeholder = "Name";
+    document.getElementsByName("surname")[1].placeholder = "Surname";
+    document.getElementsByName("email")[1].placeholder = "Email";
+    document.getElementsByName("phone")[1].placeholder = "Phone";
+    document.getElementsByName("city")[1].placeholder = "City";
+    document.getElementsByName("district")[1].placeholder = "District";
+    document.getElementsByName("neighborhood")[1].placeholder = "Neighborhood";
+    document.getElementsByName("others")[1].placeholder = "Other";
+    document.getElementsByName("extra")[1].placeholder = "Extra Notes";
+
+
+
+</script>
+
+<script>
+function myFunction() {
+
+    document.getElementsByName("address_name")[1].value = document.getElementsByName("address_name")[0].value;
+    document.getElementsByName("name")[1].value = document.getElementsByName("name")[0].value ;
+    document.getElementsByName("surname")[1].value = document.getElementsByName("surname")[0].value;
+    document.getElementsByName("email")[1].value = document.getElementsByName("email")[0].value ;
+    document.getElementsByName("phone")[1].value = document.getElementsByName("phone")[0].value ;
+    document.getElementsByName("city")[1].value = document.getElementsByName("city")[0].value ;
+    document.getElementsByName("district")[1].value = document.getElementsByName("district")[0].value ;
+    document.getElementsByName("neighborhood")[1].value = document.getElementsByName("neighborhood")[0].value ;
+    document.getElementsByName("others")[1].value = document.getElementsByName("others")[0].value ;
+    document.getElementsByName("extra")[1].value = document.getElementsByName("extra")[0].value ;
+
+
+}
+</script>
+
+{% endblock %}

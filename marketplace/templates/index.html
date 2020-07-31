@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Homepage{% endblock %}
+{% block content %}
+<ul>
+    {% for product in products %}
+    <li>
+        <a href="{% url "product_details" slug=product.slug %}">{{ product.name }}</a> - {{ product.price }} TL
+    </li>
+    {% endfor %}
+    {% if not products %}
+        <h1>No products!</h1>
+    {% endif %}
+</ul>
+{% endblock %}

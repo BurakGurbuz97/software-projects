@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+
+/* center container in the middle */
+
+html {
+    display: grid;
+    min-height: 100%;
+}
+
+body {
+    display: grid;
+    background: #e4d2de;
+    font-family: 'Lato', sans-serif, sans-serif;
+    text-transform: uppercase;
+}
+
+.container {
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    width: 70%;
+    height: 300px;
+    background: #ffffff;
+    box-shadow: 5px 5px 15px rgba(217, 170, 183, .5);
+    border-radius: 10px;
+    padding-bottom: 10px;
+}
+
+p {
+    font-size: 0.6em;
+    color: #d9aab7;
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-size: 1.2em;
+    color: #4e4e4e;
+    margin-top: -5px;
+}
+
+h2 {
+    color: #c3a1a0;
+    margin-top: -5px;
+}
+
+img {
+    max-width: 40%;
+    max-height: 100%;
+    margin-top: 10px;
+    margin-left: 10%;
+}
+
+.product {
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    top: 10%;
+    left: 45%;
+}
+
+.desc {
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 17px;
+    color: #4e4e4e;
+    font-size: 0.7em;
+    line-height: 1.6em;
+    margin-right: 25px;
+    text-align: justify;
+}
+
+button {
+    background: #cda9ac;
+    padding: 10px;
+    display: inline-block;
+    outline: 0;
+    border: 0;
+    margin: -1px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #f5f5f5;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #d9aab7;
+    transition: all 0.4s ease-in-out;
+}
+
+.add {
+    width: 100%;
+}
+
+.pick {
+    margin-top: 11px;
+    margin-bottom: 0;
+    margin-left: 20px;
+}
+
+.size {
+    padding: 9px;
+    border: 1px solid #e0c9cb;
+    font-size: 0.7em;
+    text-align: center;
+}
+
+.size:hover {
+    background: #d9aab7;
+    color: #f5f5f5;
+    transition: all 0.4s ease-in-out;
+}
+
+.focus {
+    background: #d9aab7;
+    color: #f5f5f5;
+}

@@ -1,0 +1,35 @@
+:root {
+    --primary-color: rgb(230, 0, 0);
+    --secondary-color: rgb(74, 77, 78);
+}
+
+.primary-color {
+    color: var(--primary-color) !important;
+}
+
+.secondary-color {
+    color: var(--secondary-color) !important;
+}
+
+
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border: none;
+}
+
+.btn-secondary, .summary {
+    background-color: var(--secondary-color) !important;
+}
+
+.btn-secondary, .summary > h3 {
+    color: white !important;
+}
+
+.summary h4:first-of-type {
+    border-top: none !important;
+}
+
+.number-input {
+    min-width: 3em !important;
+    padding-left: 0.5em !important;
+}

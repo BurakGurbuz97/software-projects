@@ -1,0 +1,76 @@
+.green-text {
+    color: #28a745;
+}
+.red-text {
+    color: #dc3545;
+}
+.sub-nav-active {
+    font-weight: bold;
+}
+.nav-icon {
+    font-size: 25px;
+}
+.fa-star.checked {
+    color: orange;
+}
+.lfloat {
+    float: left;
+}
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.carousel-control-prev-icon {
+     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23222' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+}
+
+.carousel-control-next-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23222' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+}
+a.nav-link {
+    color: #dc3545;
+}
+a.nav-link:hover {
+    color: #c82333;
+}
+.nav-link.dropdown-toggle::after {
+    display: none;
+}
+.dropdown-menu-md-center {
+    right: auto;
+    left: auto;
+}
+.similar_product_item {
+    color: #212529;
+}
+.similar_product_item:hover {
+    color: #212529;
+}
+.similar-product-body {
+  padding-bottom: 0px !important;
+}

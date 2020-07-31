@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Shopping Cart" %}{% endblock %}
+
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static "css/custom.css" %}?v=1.1">
+{% endblock %}
+
+{% block content %}
+    <main class="shopping-cart-page">
+        <section class="clean-block clean-cart dark">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text-info primary-color">
+                        <i class="fa fa-shopping-cart"></i>
+                        {% trans "Shopping Cart" %}
+                    </h2>
+                    <br>
+                </div>
+                <div class="content">
+                    <div class="row no-gutters">
+                        <div class="col-md-12 col-lg-8">
+                            <div class="items">
+                                {% for basket_item in basket_items %}
+                                    <div class="product">
+                                        <div class="row justify-content-center align-items-center">
+                                            <div class="col-md-3">
+                                                <div class="product-image">
+                                                    <img class="img-fluid d-block mx-auto image" alt="{{ basket_item.product.main_image.title }}" src="{{ basket_item.product.main_image.image.url }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5 product-info">
+                                                <a class="product-name primary-color" href="{% url "product_details" slug=basket_item.product.slug %}">
+                                                    {{ basket_item.product.name }}
+                                                </a>
+                                                <div class="product-specs">
+                                                    {% for property in basket_item.product.properties.all %}
+                                                        <div>
+                                                            <span>{{ property.option.name }}:&nbsp;</span>
+                                                            <span class="value">{{ property.value }}</span>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-1 quantity">
+                                                <label for="quantity-{{ basket_item.id }}" class="d-md-block">{% trans "Quantity" %}</label>
+                                                <input type="number" min="0" max="9" id="quantity-{{ basket_item.id }}" value="{{ basket_item.quantity }}" class="form-control number-input" data-basket-item-id="{{ basket_item.id }}">
+                                            </div>
+                                            <div class="col-6 col-md-3 price">
+                                                <span>{{ basket_item.total_price|floatformat:"2" }} ₺</span>
+
+                                                <div style="position: absolute; bottom: -50px; right: 20px;">
+                                                    <button
+                                                            type="submit"
+                                                            class="btn btn-toolbar primary-color basket-item-delete"
+                                                            style="font-size: 0.7em;"
+                                                            data-delete-url="{% url "basket_item_delete" basket_item.id %}"
+                                                    >
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% if basket_items %}
+                                    <div class="float-right" style="margin: 50px 0;">
+                                        <button type="submit" class="basket-delete btn btn-toolbar">
+                                            <i class="fa fa-trash">
+                                                {% trans "Empty the cart" %}
+                                            </i>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <h2>{% trans "Shopping cart is empty." %}</h2>
+                                    <h4><a href="/" class="primary-color">{% trans "Browse products to add" %}</a></h4>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-4">
+                            <div class="summary">
+                                <h3>{% trans "Summary" %}</h3>
+                                <h4>
+                                    <span class="text">{% trans "Subtotal" %}</span>
+                                    <span class="price">{{ subtotal|floatformat:"2" }} ₺</span>
+                                </h4>
+                                <h4>
+                                    <span class="text">{% trans "Discount" %}</span>
+                                    <span class="price">{{ discount|floatformat:"2" }} ₺</span>
+                                </h4>
+                                <h4>
+                                    <span class="text">{% trans "Shipping" %}</span>
+                                    <span class="price">0.0 ₺</span>
+                                </h4>
+                                <h4>
+                                    <span class="text">{% trans "Total" %}</span>
+                                    <span class="price">{{ total|floatformat:"2" }} ₺</span>
+                                </h4>
+                                <h4>
+                                    <label for="input-coupon-code" class="text secondary-color">{% trans "Coupon" %}</label>
+                                    <input id="input-coupon-code" class="input-group-text price" style="width: 140px; position: relative; top: -12px;" value="{{ basket.coupon_code|default:"" }}">
+                                    <button
+                                            class="btn btn-secondary btn-block apply-coupon-code"
+                                            style="font-size: 14px; margin-top: 20px;"
+                                            type="button"
+                                    >
+                                        {% if basket.coupon_code %}
+                                            {% trans "Change Coupon" %}
+                                        {% else %}
+                                            {% trans "Apply Coupon" %}
+                                        {% endif %}
+                                    </button>
+                                </h4>
+                                <button onclick="window.location.href = '{% url "add_shipment" %}'" class="btn btn-primary btn-block btn-lg" type="button">{% trans "Checkout" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block extraJS %}
+    <script>
+        $(document).ready(function () {
+            $('#input-coupon-code').blur(function () {
+                $('.apply-coupon-code').data('coupon-code', this.value);
+            });
+            $('.basket-item-delete').click(function () {
+                let me = $(this);
+                $.ajax({
+                    url: me.data('delete-url'),
+                    type: "DELETE",
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                    error: function (xhr) {
+                        let data = jQuery.parseJSON(xhr.responseText);
+                        me.text(data.message);
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}

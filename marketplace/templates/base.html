@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+{% load i18n static webtags %}{% get_current_language as LANGUAGE_CODE %}{% get_available_languages as available_languages %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <title>{% block title %}{% endblock %} | Marketplace</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    {% for lang_code, lang_name in available_languages %}
+    <link rel="alternate" hreflang="{{ lang_code }}" href="{{ request.path|replace_language:lang_code }}">{% endfor %}
+
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/styles.min.css" %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
+    <link rel="stylesheet" href="{% static "fontawesome/css/all.min.css" %}">
+    <link href="{% static "css/lightbox.min.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "css/extra.css" %}?v=3">
+
+    {% block extraHead %}{% endblock %}
+</head>
+
+<body>
+<!-- navigation bar starts -->
+<nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar main-marketplace-navigation" style="position:relative" data-basket-api="{% url "basket_management_ajax" %}">
+    <div class="container"><a class="navbar-brand logo" href="{% url "homepage" %}">Marketplace</a>
+        <div id="navcol-1" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    {% if not user.is_registered %}
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#signinModal"><i class="fa fa-user nav-icon"></i></a>
+                    {% else %}
+                        <a class="nav-link dropdown-toggle" href="#" id="user-dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user nav-icon"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-md-center" aria-labelledby="user-dropdown-link">
+                            <!-- <a class="dropdown-item disabled" disabled="disabled" href="#">{% trans "Dashboard" %}</a>
+                            <div class="dropdown-divider"></div> -->
+                            <a class="dropdown-item" href="{% url "logout" %}">{% trans "Logout" %}</a>
+                        </div>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'basket' %}"><i class="fa fa-shopping-cart nav-icon"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% block subNavigation %}
+<div class="nav-scroller bg-white shadow-sm container">
+  <nav class="nav nav-underline">
+      {% for category in categories %}
+        <a class="nav-link{% if product_category and product_category == category %} sub-nav-active{% endif %}" href="{% url 'listing:product_list' category.slug %}">{% if category.template_icon %}<i class="{{ category.template_icon }}"></i> {% endif %}{{ category.name }}</a>
+      {% endfor %}
+  </nav>
+</div>
+{% endblock %}
+<!-- navigation bar ends -->
+{% block loginRegModals %}
+<!-- User related models -->
+{% if not user.is_registered %}
+<div class="modal fade login" id="signinModal" tabindex="-1" role="dialog" aria-labelledby="singinModalLabel" aria-hidden="true">
+  <div class="modal-dialog login animated" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="singinModalLabel">{% trans "Login" %}</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="{% trans "Close" %}"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+             <div class="content">
+                 <form class="form-signin" id="login-form" data-url="{% url "login" %}" action="{% url "login" %}" method="post">
+                     {% csrf_token %}
+                     <div class="error"></div>
+                     <span class="login-message"></span>
+                     <div class="form loginBox" id="login-credentials">
+                         <label for="inputEmail" class="sr-only">{% trans "Email address" %}</label>
+                         <input type="email" id="inputEmail" class="form-control" name="email" placeholder="{% trans "Email address" %}" required autofocus>
+                         <label for="inputPassword" class="sr-only">{% trans "Password" %}</label>
+                         <input type="password" id="inputPassword" class="form-control" name="password" placeholder="{% trans "Password" %}" required>
+                         <button class="btn btn-lg btn-danger btn-block" type="submit" id="login-button">{% trans "Sign in" %}</button>
+                     </div>
+                 </form>
+             </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-dark" value="{% trans "Register" %}" data-toggle="modal" data-target="#registerModal">{% trans "Register" %}</button>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade login" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog login animated" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="registerModalLabel">{% trans "Register" %}</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="{% trans "Close" %}"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+             <div class="content">
+                 <form class="form-signin" id="registration-form" data-url="{% url "register" %}" action="{% url "register" %}" method="post">
+                     {% csrf_token %}
+                     <div class="error"></div>
+                     <span class="registration-message"></span>
+                     <div class="form registerBox" id="register-credentials">
+                         <label for="inputEmail" class="sr-only">{% trans "Email address" %}</label>
+                         <input type="email" id="inputEmail" class="form-control" name="email" placeholder="{% trans "Email address" %}" required autofocus>
+                         <label for="inputPassword" class="sr-only">{% trans "Password" %}</label>
+                         <input type="password" id="inputPassword" class="form-control" name="password" placeholder="{% trans "Password" %}" required>
+                         <label for="inputFirstName" class="sr-only">{% trans "First name" %}</label>
+                         <input type="text" id="inputFirstName" class="form-control" name="first_name" placeholder="{% trans "First name" %}">
+                         <label for="inputLastName" class="sr-only">{% trans "Last name" %}</label>
+                         <input type="text" id="inputLastName" class="form-control" name="last_name" placeholder="{% trans "Last name" %}">
+                         <label for="inputUsername" class="sr-only">{% trans "Username" %}</label>
+                         <input type="text" id="inputUsername" class="form-control" name="username" placeholder="{% trans "Username" %}">
+                         <button class="btn btn-lg btn-danger btn-block" type="submit" id="register-button">{% trans "Register" %}</button>
+                     </div>
+                 </form>
+             </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-dark" value="{% trans "Log in" %}" data-toggle="modal" data-target="#registerModal">{% trans "Log in" %}</button>
+        </div>
+      </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block content %}{% endblock %}
+
+<!-- footer starts -->
+<footer class="page-footer dark" style="display:block; font-size: 16px;">
+    <div class="container">
+        <div class="row" style="margin-top: 5px;padding-top: 0px;">
+            <div class="col-sm-3">
+                <h5 class="text-center" style="font-size: 12px;">{% trans "Site Map" %}</h5>
+            </div>
+            <div class="col-sm-3">
+                <h5 class="text-center" style="font-size: 12px;">{% trans "Legal Terms" %}</h5>
+            </div>
+            <div class="col-sm-3">
+                <h5 class="text-center" style="font-size: 12px;">{% trans "Privacy and Cookies" %}</h5>
+            </div>
+            <div class="col-sm-3">
+                <h5 class="text-center" style="font-size: 12px;">{% trans "Contact Us" %}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <p style="font-size: 12px;">© 2020 <a href="https://gitlab.com/produck/marketplace/-/graphs/master" target="_blank"><i class="fab fa-gitlab"></i> Marketplace Contributors</a></p>
+    </div>
+</footer>
+<!-- footer ends -->
+<script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+<script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/script.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/lightbox.min.js" %}"></script>
+<script type="text/javascript">
+    let Translations = {
+        "added_to_basket": "{% trans "Added to basket" %}"
+    }
+</script>
+<script type="text/javascript" src="{% static "js/extra.js" %}?v=3"></script>
+{% block extraJS %}{% endblock %}
+</body>
+</html>

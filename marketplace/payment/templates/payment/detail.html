@@ -1,0 +1,464 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Payment" %}{% endblock %}
+{% block content %}
+
+<head>
+  <style>
+      .vertical-menu {
+          width: 200px;
+          height: 150px;
+          overflow-y: auto;
+      }
+
+      h3 {
+          color: black;
+      }
+
+      h2 {
+          color: #4a4d07;
+      }
+
+      .btn-group button {
+          background-color: #e60000;
+          border-radius: 5px;
+          border: 2px solid white;
+          padding: 10px 24px;
+          color: white;
+          cursor: pointer;
+          width: 47%;
+          display: block; /* Make the buttons appear below each other */
+      }
+
+      .btn-group button:not(:last-child) {
+          border-bottom: none; /* Prevent double borders */
+      }
+
+      /* Add a background color on hover */
+      .btn-group button:hover {
+          background-color: #e60000;
+          cursor: pointer;
+          cursor: hand;
+          border-radius: 5px;
+      }
+
+      .button1 {
+          background-color: #e60000;
+          border: none;
+          color: white;
+          border-radius: 5px;
+          padding-left: 10px;
+          padding: 8px 40px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+      }
+      .button_credit_card {
+          background-color: #e60000;
+          border: none;
+          color: white;
+          padding-left: 10px;
+          padding: 8px 40px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+      }
+      .button_credit_card:focus{
+        background-color:  #E9967A;
+      }
+      .button_cash {
+          background-color: #e60000;
+          border: none;
+          color: white;
+          padding-left: 10px;
+          padding: 8px 40px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+      }
+      .button_cash:focus{
+        background-color: #E9967A ;
+      }
+
+      * {
+          box-sizing: border-box;
+      }
+
+      .row {
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+          margin: 0 -16px;
+      }
+
+      .col-25 {
+          -ms-flex: 25%;
+          flex: 25%;
+      }
+
+      .col-50 {
+          -ms-flex: 50%;
+          flex: 50%;
+      }
+
+      .col-75 {
+          -ms-flex: 75%;
+          flex: 75%;
+      }
+
+      .col-25,
+      .col-50,
+      .col-75 {
+          padding: 0 16px;
+      }
+
+
+      input[type=text] {
+          width: 100%;
+          margin-bottom: 20px;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+      }
+
+      label {
+          color: #4a4d07;
+          margin-bottom: 10px;
+          display: block;
+      }
+
+      .icon-container {
+          margin-bottom: 20px;
+          padding: 7px 0;
+          font-size: 24px;
+      }
+
+      /* The Modal (background) */
+      .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          padding-top: 100px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0, 0, 0); /* Fallback color */
+          background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
+
+      /* Modal Content */
+      .modal-content {
+          background-color: #fefefe;
+          margin: auto;
+          padding: 20px;
+          border: 10px solid #888;
+          width: 35%;
+          height: 70%;
+          letter-spacing: 2px;
+          text-align: center;
+          line-height: 2;
+          font-size: 17px;
+          color: #1acd4c;
+      }
+
+      /* The Close Button */
+      .close {
+          color: #aaaaaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+          color: #000;
+          text-decoration: none;
+          cursor: pointer;
+      }
+
+      .btn {
+          background-color: #e60000;
+          color: white;
+          padding: 12px;
+          margin: 10px 0;
+          border: none;
+          width: 100%;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 17px;
+      }
+
+      .btn:hover {
+          background-color: #e60000;
+      }
+
+      hr {
+          border: 1px solid light#4a4d07;
+      }
+
+      span.price {
+          float: right;
+          color: #4a4d07;
+      }
+
+      @media (max-width: 800px) {
+          .row {
+              flex-direction: column-reverse;
+          }
+
+          .col-25 {
+              margin-bottom: 20px;
+          }
+      }
+  </style>
+
+  </head>
+  <div class="row">
+  <div class="col-75">
+      <div class="container" style="
+      padding: 5px 20px 15px 20px;
+      border: 1px solid light#4a4d07;
+      border-radius: 3px;">
+
+          <div class="row">
+              <div class="col-50">
+              <form action="{% url 'payment:confirm_payment' %}" method="POST">
+                      {% csrf_token %}
+                  <h2>{% trans "Billing Address" %}</h2>
+                  <label for="fname"><i class="fa fa-user"></i> {% trans "Full Name" %}</label>
+                  <input type="text" id="fname" name="firstname" placeholder="{% trans "First and last name" %}" value="{{ name }} {{ surname }}">
+                  <label for="email"><i class="fa fa-envelope"></i> {% trans "Email" %}</label>
+                  <input type="text" id="email" name="email" placeholder="something@example.com" value={{ email }}>
+                  <div style="color:grey"><i class="fa fa-address-card-o"></i> {% trans "Address" %}</div>
+                  <address id="def_add">
+                    {{others}} {{ neighborhood }}<br>
+                    {{ district }}/{{ city }}<br>
+                  </address>
+                  <button onclick="window.location.href = '{% url "add_shipment" %}'" class="button button1" id="button2" type="button">{% trans "Change the Address" %}</button>
+
+                  <br>
+                  <br>
+                  <div style="color:#4a4d07"><i class="fa fa-money"></i> {% trans "Payment Menu" %}</div>
+                  <br><br>
+                  <div class="btn-group">
+                      <button class = "button button_credit_card" id="button_credit_card">{% trans "Credit Card" %}</button>
+                      <button class = "button button_cash" id = "button_cash">{% trans "Pay on Delivery" %}</button>
+                  </div>
+
+              </div>
+
+              <div class="col-50">
+                <h3 id="pay_">{% trans "Payment" %}</h3>
+                <label for="fname" id="accepted_cards">{% trans "Accepted Cards" %}</label>
+                <div class="icon-container" id="label_container">
+                  <i class="fab fa-cc-visa" style="color:#e60000;"></i>
+                  <i class="fab fa-cc-amex" style="color:#e60000;"></i>
+                  <i class="fab fa-cc-mastercard" style="color:#e60000;"></i>
+                  <i class="fab fa-cc-discover" style="color:#e60000;"></i>
+                </div>
+                <label for="cname" id="name_on_card">{% trans "Name on Card" %}</label>
+                <input type="text" id="cname" name="cardname" placeholder="{% trans "First and last name" %}" autocomplete="off" required>
+                <label for="ccnum" id="credit_card_number">{% trans "Credit card number" %}</label>
+                <input type="text" id="ccnum" name="cardnumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" onKeyUp="validate(event)" required >
+                <div class="col-30">
+                    <label for="expmonth" id="expiry_m">{% trans "Expiry Month" %}</label>
+                    <select name="month" id="expmonth" placeholder="Month">
+                          <option value="1">01</option>
+                          <option value="2">02</option>
+                          <option value="3">03</option>
+                          <option value="4">04</option>
+                          <option value="5">05</option>
+                          <option value="6">06</option>
+                          <option value="7">07</option>
+                          <option value="8">08</option>
+                          <option value="9">09</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                      </select>
+                  </div>
+                  <br/>
+                  <div class="col-30">
+                    <label for="selectYear" id="expiry_y">{% trans "Expiry Year" %}</label>
+                    <select id="selectYear" name="year" placeholder="Year" >
+                          <option value="1">01</option>
+
+                      </select>
+                  </div>
+                  <br/>
+                  <div class="col-30">
+                    <label for="cvv" id="cvv_num">CVV</label>
+                    <input type="number" id="cvv" min="0" pattern=".{3,4}" name="cvv" placeholder="XXX"
+                           autocomplete="off" required>
+                  </div>
+              </div>
+
+          </div>
+
+          <br>
+          <label>
+              <input type="checkbox" checked="checked" name="sameadr"> Acceptance of general terms and conditions
+          </label>
+      </div>
+  </div>
+  <div class="col-25">
+    <div class="container" style="color:#4a4d07;
+    padding: 5px 20px 15px 20px;
+    border: 1px solid light#4a4d07;
+    border-radius: 3px;">
+
+    <h2>Cart <span class="price" style="color:#4a4d07;"><i class="fa fa-shopping-cart"></i></span></h2>
+    <p>Subtotal <span class="price">₺{{ subtotal|floatformat:2 }}</span></p>
+    <p>Discount<span class="price">₺{{ discount|floatformat:2 }}</span></p>
+    <p>Shipping<span class="price">₺0.0</span></p>
+    <hr>
+    <p>Total <span class="price" style="color:black"><b>₺{{ total|floatformat:2 }}</b></span></p>
+    <button id="pay" class="button button1">{% trans "PAY" %}</button>
+
+      </form>
+      </div>
+  </div>
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <br>
+          <p> THANK YOU!</p>
+          <img src="{% static "payment\icon.png" %}" height="120" width="120">
+          <br>
+          <p style="font-size:22px;color: black;">${{ total }}</p>
+          <p style="color: black">YOUR ORDER HAS BEEN CONFIRMED</p>
+          <p style="font-size:15px;">A RECEIPT WAS SENT TO YOUR EMAIL </p>
+      </div>
+
+  </div>
+
+  </div>
+  <!--<script src="jquery-3.5.1.js"></script>-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+  // Get the button that opens the modal
+  var btn = document.getElementById("pay");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  function validate(e) {
+    var invalidcharacters = /[^0-9]/gi
+    var phn = document.getElementById('ccnum');
+    if (invalidcharacters.test(phn.value)) {
+        newstring = phn.value.replace(invalidcharacters, "");
+        phn.value = newstring
+    }
+  }
+
+  // When the user clicks the button, open the modal
+  //btn.onclick = function () {
+  //    modal.style.display = "block";
+  //}
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function () {
+      modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+  setInputFilter(document.getElementById("credit_card_number"), value => {
+      return /^\d*$/.test(value); // Allow digits and '.' only, using a RegExp
+  });
+  </script>
+  <script>
+  $(document).ready(function () {
+      var $newAdd = $('#newAdd');
+      var $button2 = $('#button2');
+      var $button1 = $('#button1');
+      var $selectYear = $('#selectYear');
+      var $label_container = $('#label_container');
+      var $button_credit_card = $('#button_credit_card');
+      var $button_cash = $('#button_cash');
+      var $accepted_cards = $('#accepted_cards');
+      var $name_on_card = $('#name_on_card');
+      var $cname = $('#cname');
+      var $ccnum = $('#ccnum');
+      var $expiry_m = $('#expiry_m');
+      var $expiry_y = $('#expiry_y');
+      var $expmonth = $('#expmonth');
+      var $year = $('#year');
+      var $selectYear = $('#selectYear');
+      var $credit_card_number = $('#credit_card_number');
+      var $cvv = $('#cvv');
+      var $cvv_num = $('#cvv_num');
+      var $pay_ = $('#pay_');
+      $button_credit_card.click(function (){
+        $label_container.show();
+        $accepted_cards.show();
+        $name_on_card.show();
+        $cname.show();
+        $ccnum.show();
+        $expiry_m.show();
+        $expiry_y.show();
+        $expmonth.show();
+        $year.show();
+        $selectYear.show();
+        $credit_card_number.show();
+        $cvv_num.show();
+        $cvv.show();
+        $pay_.show();
+
+      })
+      $button_cash.click(function (){
+        $label_container.hide();
+        $accepted_cards.hide();
+        $name_on_card.hide();
+        $cname.hide();
+        $ccnum.hide();
+        $expiry_m.hide();
+        $expiry_y.hide();
+        $expmonth.hide();
+        $year.hide();
+        $selectYear.hide();
+        $credit_card_number.hide();
+        $cvv.hide();
+        $cvv_num.hide();
+        $pay_.hide();
+
+      })
+
+      let options = ``;
+      ``
+      let start = 2020;
+      let end = 2055;
+      for (let year = start; year <= end; year++) {
+          options += `<option>${year}</option>`
+      }
+      $selectYear.html(options);
+
+
+  });
+
+  </script>
+{% endblock %}

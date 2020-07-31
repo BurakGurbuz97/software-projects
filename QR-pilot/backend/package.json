@@ -1,0 +1,34 @@
+{
+  "name": "backend-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.0.0",
+    "axios": "latest",
+    "jsonwebtoken": "^7.3.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.1.0",
+    "koa-passport": "^2.2.2",
+    "koa-respond": "^2.1.0",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.7.5",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0",
+    "randomatic": "^3.1.1",
+    "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.1",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
+    "supertest": "^4.0.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

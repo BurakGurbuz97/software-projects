@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static i18n humanize thumbnail %}
+{% block title %}{% trans "Homepage" %}{% endblock %}
+{% block extraHead %}
+<script type="text/javascript" src="{% static " js/jquery.min.js " %}"></script>
+<script type="text/javascript" src="{% static " bootstrap/js/bootstrap.min.js " %}"></script>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css'>
+<link rel="stylesheet" href="{% static 'listing/banner.css' %}">
+<link rel="stylesheet" href="{% static 'listing/index-style.css' %}">{% endblock %} {% block content %}
+<div  style="margin-bottom: 60px; margin-top: 60px;" class="page-header">
+    <form class="example" action="{% url 'listing:search' %}">
+        <input type="text" placeholder="{% trans "Search..." %}" name="searchText">
+        <button type="submit">
+            <i class="fa fa-search"></i>
+        </button>
+    </form>
+</div>
+
+
+
+<div class="card-carousel">
+    {% for product in products %}
+    <div class="my-card card" style="width: 16rem; height: 20rem; background: white; border-color: #E60000">
+
+        {% thumbnail product.main_image.image "250x250" crop="center" as im %}
+            <img  style="margin-top: 5%; margin-bottom: 5%; margin-left: 25%; height: 8rem; width: 8rem; " src={{im.url}}   alt="{{ image.title }}"/>
+        {% endthumbnail %}
+
+        <div class="card-body">
+            <h5 style="font-size: small;" class="card-title vodafone-red-text text-center">{{product.name}}</h5>
+            <h5 style="font-size: large;" class="card-title vodafone-grey-text text-center">₺ {{product.price}}</h5>
+            <a style="margin-top: 2%;" method="get"  href="{% url "product_details" slug=product.slug %}" class="btn2 btn-lg text-center text-white vodafone-red-back">{% trans "Details" %}</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div style="padding-bottom: 250px"></div>
+
+
+
+
+
+{% endblock %} {% block extraJS %}
+<script>
+    $num = $('.my-card').length;
+    $even = $num / 2;
+    $odd = ($num + 1) / 2;
+
+    if ($num % 2 == 0) {
+        $('.my-card:nth-child(' + $even + ')').addClass('active');
+        $('.my-card:nth-child(' + $even + ')').prev().addClass('prev');
+        $('.my-card:nth-child(' + $even + ')').next().addClass('next');
+    } else {
+        $('.my-card:nth-child(' + $odd + ')').addClass('active');
+        $('.my-card:nth-child(' + $odd + ')').prev().addClass('prev');
+        $('.my-card:nth-child(' + $odd + ')').next().addClass('next');
+    }
+
+    $('.my-card').click(function() {
+        $slide = $('.active').width();
+        console.log($('.active').position().left);
+
+        if ($(this).hasClass('next')) {
+            $('.card-carousel').stop(false, true).animate({
+                left: '-=' + $slide
+            });
+        } else if ($(this).hasClass('prev')) {
+            $('.card-carousel').stop(false, true).animate({
+                left: '+=' + $slide
+            });
+        }
+
+        $(this).removeClass('prev next');
+        $(this).siblings().removeClass('prev active next');
+
+        $(this).addClass('active');
+        $(this).prev().addClass('prev');
+        $(this).next().addClass('next');
+    });
+
+
+    // Keyboard nav
+    $('html body').keydown(function(e) {
+        if (e.keyCode == 37) { // left
+            $('.active').prev().trigger('click');
+        } else if (e.keyCode == 39) { // right
+            $('.active').next().trigger('click');
+        }
+    });
+</script>
+{% endblock %}
